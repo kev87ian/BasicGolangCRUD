@@ -1,4 +1,4 @@
-GET http://localhost:3000/post/1
+GET http://localhost:3000/post/4
 Accept: application/json
 
 

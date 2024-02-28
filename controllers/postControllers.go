@@ -41,8 +41,12 @@ func GetPosts(c *gin.Context) {
 func GetAllPosts(c *gin.Context) {
 	// get the posts
 	var posts []models.Post
-	initializers.DB.Find(&posts)
+	//	initializers.DB.Find(&posts)
 
+	if result := initializers.DB.First(&posts); result.Error != nil {
+		c.JSON(http.StatusOK, gin.H{"Posts": posts})
+		return
+	}
 	c.JSON(200, gin.H{
 		"posts": posts,
 	})
