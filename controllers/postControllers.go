@@ -38,7 +38,7 @@ func PostsCreate(c *gin.Context) {
 func GetPosts(c *gin.Context) {
 
 }
-func PostsIndex(c *gin.Context) {
+func GetAllPosts(c *gin.Context) {
 	// get the posts
 	var posts []models.Post
 	initializers.DB.Find(&posts)
@@ -46,4 +46,21 @@ func PostsIndex(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"posts": posts,
 	})
+}
+
+func GetOnePost(c *gin.Context) {
+	// get id from parameter
+	id := c.Param("id")
+
+	// declare a "post" variable to hold the retrieved post
+	var post models.Post
+	// If the post is not found, return a JSON response with a 404 status
+	if result := initializers.DB.First(&post, id); result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"Error": "Post does not exist",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"post": post})
 }
