@@ -14,6 +14,8 @@ func init() {
 func main() {
 	r := gin.Default()
 	r.POST("/posts", controllers.PostsCreate)
+	r.GET("/posts", controllers.PostsIndex)
+
 	err := r.Run()
 	if err != nil {
 		log.Fatal(err)
