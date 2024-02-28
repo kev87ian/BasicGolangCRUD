@@ -1,0 +1,7 @@
+POST http://localhost:3000/posts
+Content-Type: application/json
+
+{
+  "Title": "The very first API written in Go",
+  "Body": "The body shall go here"
+}

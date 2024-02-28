@@ -2,22 +2,21 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/kev87ian/BasicGolangCRUD/controllers"
 	"github.com/kev87ian/BasicGolangCRUD/initializers"
+	"log"
 )
 
 func init() {
-
 	initializers.LoadEnvVariables()
 	initializers.ConnectToDB()
 }
 func main() {
 	r := gin.Default()
-
-	r.GET("/", func(context *gin.Context) {
-		context.JSON(200, gin.H{
-			"message": "Hello friend!",
-		})
-	})
-
-	r.Run()
+	r.POST("/posts", controllers.PostsCreate)
+	err := r.Run()
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }
