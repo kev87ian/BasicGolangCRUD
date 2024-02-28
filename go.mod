@@ -1,4 +1,4 @@
-module REST
+module github.com/kev87ian/BasicGolangCRUD
 
 go 1.22.0
 
