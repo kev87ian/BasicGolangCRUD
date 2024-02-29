@@ -15,8 +15,9 @@ func main() {
 	r := gin.Default()
 	r.POST("/posts", controllers.PostsCreate)
 	r.GET("/posts", controllers.GetAllPosts)
-	r.GET("/post/:id", controllers.GetOnePost)
-
+	r.GET("/posts/:id", controllers.GetOnePost)
+	r.PUT("/posts/:id", controllers.UpdatePost)
+	r.DELETE("/posts/:id", controllers.DeletePost)
 	err := r.Run()
 	if err != nil {
 		log.Fatal(err)

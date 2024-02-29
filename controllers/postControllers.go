@@ -34,21 +34,16 @@ func PostsCreate(c *gin.Context) {
 	// Return JSON response with the created post
 	c.JSON(http.StatusCreated, gin.H{"Post:": post})
 }
-
-func GetPosts(c *gin.Context) {
-
-}
 func GetAllPosts(c *gin.Context) {
 	// get the posts
 	var posts []models.Post
-	//	initializers.DB.Find(&posts)
-
-	if result := initializers.DB.First(&posts); result.Error != nil {
+	if result := initializers.DB.Find(&posts); result.Error != nil {
 		c.JSON(http.StatusOK, gin.H{"Posts": posts})
 		return
 	}
 	c.JSON(200, gin.H{
-		"posts": posts,
+		"Total_Posts": len(posts),
+		"Posts":       posts,
 	})
 }
 
@@ -67,4 +62,56 @@ func GetOnePost(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"post": post})
+}
+func UpdatePost(c *gin.Context) {
+	// get id off the url
+	id := c.Param("id")
+	// get the data off req body
+	var body struct {
+		Body  string
+		Title string
+	}
+	c.Bind(&body)
+	// find the post we're updating
+	var post models.Post
+	initializers.DB.First(&post, id)
+	//update it
+	db := initializers.DB
+
+	if result := db.Model(&post).Updates(models.Post{Title: body.Title, Body: body.Body}); result.Error != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{
+			"Error": "Post was not updated",
+		})
+		return
+	}
+	//respond with it
+
+	c.JSON(http.StatusOK, gin.H{
+		"Post": post,
+	})
+}
+func DeletePost(c *gin.Context) {
+	// Get the ID from the URL parameter
+	id := c.Param("id")
+	db := initializers.DB
+
+	// Declare a variable to hold the post
+	var post models.Post
+
+	// Find the post by ID
+	if result := db.First(&post, id); result.Error != nil {
+		// If the post is not found, return a JSON response with a 404 status code
+		c.JSON(http.StatusNotFound, gin.H{"error": "Post not found"})
+		return
+	}
+
+	// Delete the post
+	if result := db.Delete(&post); result.Error != nil {
+		// If an error occurs during deletion, return a JSON response with a 500 status code
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
+
+	// Return a success message
+	c.JSON(http.StatusOK, gin.H{"message": "Post deleted successfully"})
 }
